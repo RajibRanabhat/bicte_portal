@@ -1,0 +1,37 @@
+export type NavChild = {
+  label: string;
+  href: string;
+};
+
+export type NavItem = {
+  label: string;
+  href: string;
+  children?: NavChild[];
+};
+
+export const navigation: NavItem[] = [
+  {
+    label: "Home",
+    href: "/",
+  },
+  {
+    label: "About",
+    href: "/about",
+    children: [
+      { label: "Gallery", href: "/about/gallery" },
+      { label: "Admissions", href: "/about/admissions" },
+    ],
+  },
+  {
+    label: "Curriculum",
+    href: "/curriculum",
+  },
+  {
+    label: "Faculty",
+    href: "/faculty",
+  },
+  {
+    label: "Contact",
+    href: "/contact",
+  },
+];
