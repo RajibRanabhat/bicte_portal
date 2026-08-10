@@ -18,7 +18,6 @@ export const navigation: NavItem[] = [
     label: "About",
     href: "/about",
     children: [
-      { label: "Gallery", href: "/about/gallery" },
       { label: "Admissions", href: "/about/admissions" },
     ],
   },
@@ -40,7 +39,8 @@ export const navigation: NavItem[] = [
     href: "/faculty",
   },
   {
-    label: "Contact",
-    href: "/contact",
+    label: "Major Activities",
+    href: "/major-activities",
+    children: [{ label: "Gallery", href: "/about/gallery" }],
   },
 ];
