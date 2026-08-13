@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { gallery, type GalleryPhoto } from "@/data/gallery";
 import PageHeader from "@/components/PageHeader";
 
@@ -69,12 +69,12 @@ function getOrigin(index: number, columns: number) {
   };
 }
 
-const gridVariants = {
+const gridVariants: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: (origin: { x: number; y: number }) => ({
     opacity: 0,
     x: origin.x,
@@ -92,7 +92,7 @@ const cardVariants = {
   },
 };
 
-const panelVariants = {
+const panelVariants: Variants = {
   enter: { opacity: 0, x: 24 },
   center: { opacity: 1, x: 0, transition: { duration: 0.35, ease: "easeOut" } },
   exit: { opacity: 0, x: -24, transition: { duration: 0.2, ease: "easeIn" } },
