@@ -27,11 +27,16 @@ export const navigation: NavItem[] = [
     href: "/curriculum",
   },
   {
+    label: "Practicals",
+    href: "/practicals",
+    children: [{ label: "Coming Soon", href: "/practicals" }],
+  },
+  {
     label: "Faculty",
     href: "/faculty",
   },
   {
-    label: "Contact",
-    href: "/contact",
+    label: "ABIT Club",
+    href: "/abit-club",
   },
 ];

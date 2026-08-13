@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Phone, Mail } from "lucide-react";
 import { navigation } from "@/data/navigation";
 
 export default function Navbar() {
@@ -23,49 +22,30 @@ export default function Navbar() {
 
   return (
     <header>
-      {/* Top info bar */}
-      <div className="bg-gray-50 border-b border-stone/10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-3">
+      {/* Logo section — scrolls away normally */}
+      <div className="bg-white py-3">
+        <div className="mx-auto flex max-w-7xl justify-center px-4 sm:px-6 lg:px-8">
+          <Link href="/">
             <Image
-              src="/logo-emblem.png"
+              src="/logo-full.png"
               alt="Aadikavi Bhanubhakta Campus"
-              width={44}
-              height={44}
-              className="h-11 w-auto"
+              width={280}
+              height={90}
+              className="h-16 w-auto sm:h-20"
             />
-            <div className="flex flex-col leading-tight">
-              <span className="text-sm text-stone/80 sm:text-base">
-                Aadikavi Bhanubhakta Campus
-              </span>
-              <span className="text-sm font-bold text-navy sm:text-base">
-                BICTE
-              </span>
-            </div>
           </Link>
-
-          <div className="hidden items-center gap-4 text-xs text-stone sm:flex">
-            <span className="flex items-center gap-1">
-              <Phone className="h-3.5 w-3.5" />
-              065-590096
-            </span>
-            <span className="flex items-center gap-1">
-              <Mail className="h-3.5 w-3.5" />
-              abcampus@gmail.com
-            </span>
-          </div>
         </div>
       </div>
 
-      {/* Nav strip */}
+      {/* Nav strip — becomes fixed once scrolled */}
       <div
         className={`z-50 w-full bg-primary shadow-sm ${
           scrolled ? "fixed top-0 left-0" : "relative"
         }`}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative flex h-16 items-center justify-center">
-            <nav className="hidden md:flex md:items-center md:gap-8">
+          <div className="relative flex h-14 items-center justify-center">
+            <nav className="hidden md:flex md:items-center md:gap-7">
               {navigation.map((item) => (
                 <div key={item.label} className="group relative">
                   <Link
@@ -133,6 +113,7 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* Mobile drawer */}
         <div
           className={`overflow-hidden bg-primary transition-all duration-300 md:hidden ${
             mobileOpen ? "max-h-screen" : "max-h-0"
@@ -145,7 +126,7 @@ export default function Navbar() {
                   <Link
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex-1 py-3 text-base font-medium text-white"
+                    className="flex-1 py-3 text-sm font-medium text-white"
                   >
                     {item.label}
                   </Link>
@@ -199,7 +180,7 @@ export default function Navbar() {
       </div>
 
       {/* Spacer to prevent content jump once nav becomes fixed */}
-      {scrolled && <div className="h-16" />}
+      {scrolled && <div className="h-14" />}
     </header>
   );
 }
