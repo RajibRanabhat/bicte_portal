@@ -1,91 +1,124 @@
-import {
-  ClipboardEdit,
-  Repeat2,
-  ClipboardCheck,
-  Clock3,
-  GraduationCap,
-  Banknote,
-  Award,
-  HeartHandshake,
-  Globe2,
-} from "lucide-react";
+import { Award, HeartHandshake, Globe2, Wallet, BookOpen, Building2 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import PageHeader from "@/components/PageHeader";
-
-const roadmapSteps = [
-  {
-    icon: ClipboardEdit,
-    label: "Entrance Exam",
-    desc: "Sit for the TU entrance exam covering general knowledge and basic IT skills.",
-    x: 6,
-    y: 25,
-  },
-  {
-    icon: Repeat2,
-    label: "2nd Exam",
-    desc: "Missed the first attempt? Appear for the second TU entrance exam.",
-    x: 30,
-    y: 78,
-  },
-  {
-    icon: ClipboardCheck,
-    label: "Results",
-    desc: "Tribhuvan University announces results and eligible candidates.",
-    x: 55,
-    y: 25,
-  },
-  {
-    icon: Clock3,
-    label: "Admission Deadline",
-    desc: "Submit documents and pay fees before the deadline to confirm your seat.",
-    x: 78,
-    y: 78,
-  },
-  {
-    icon: GraduationCap,
-    label: "Enrollment",
-    desc: "Officially enrolled into BICTE's first semester. Welcome aboard!",
-    x: 96,
-    y: 25,
-  },
-];
+import CountUp from "@/components/CountUp";
+import AdmissionRoad from "@/components/AdmissionRoad";
 
 const ranks = [
   {
     rank: "1st Rank",
-    amount: "NPR 15,000",
+    amount: 15000,
+    accent: "from-amber-300 to-amber-500",
     iconBg: "bg-amber-100",
     iconColor: "text-amber-600",
-    border: "border-amber-200",
+    ring: "ring-amber-200",
+    order: "sm:order-2",
+    lift: "sm:-mt-6 sm:pb-10",
   },
   {
     rank: "2nd Rank",
-    amount: "NPR 10,000",
-    iconBg: "bg-gray-200",
+    amount: 10000,
+    accent: "from-gray-300 to-gray-400",
+    iconBg: "bg-gray-100",
     iconColor: "text-gray-500",
-    border: "border-gray-300",
+    ring: "ring-gray-200",
+    order: "sm:order-1",
+    lift: "",
   },
   {
     rank: "3rd Rank",
-    amount: "NPR 5,000",
+    amount: 5000,
+    accent: "from-orange-300 to-orange-500",
     iconBg: "bg-orange-100",
     iconColor: "text-orange-700",
-    border: "border-orange-200",
+    ring: "ring-orange-200",
+    order: "sm:order-3",
+    lift: "",
   },
+];
+
+const rankDirections = ["up", "left", "right"] as const;
+
+const included = [
+  { icon: BookOpen, label: "Tuition" },
+  { icon: Building2, label: "Campus services" },
+  { icon: Wallet, label: "Exam fees" },
 ];
 
 const otherScholarships = [
   {
     icon: HeartHandshake,
+    eyebrow: "Need based",
     title: "Financial Hardship Support",
     desc: "Students from economically disadvantaged backgrounds may also be considered for scholarship assistance.",
+    bar: "bg-crimson",
+    iconBg: "bg-crimson/10",
+    iconColor: "text-crimson",
   },
   {
     icon: Globe2,
+    eyebrow: "Beyond campus",
     title: "External Programs",
     desc: "Merit- or need-based scholarships offered by government and private institutions beyond the campus.",
+    bar: "bg-primary",
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
   },
 ];
+
+function SectionTitle({
+  eyebrow,
+  title,
+  subtitle,
+  light = false,
+}: {
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  light?: boolean;
+}) {
+  return (
+    <div className="text-center">
+      <Reveal duration={600}>
+        <p
+          className={`text-xs font-semibold uppercase tracking-[0.25em] ${
+            light ? "text-white/60" : "text-primary"
+          }`}
+        >
+          {eyebrow}
+        </p>
+      </Reveal>
+      <Reveal delay={100} duration={700}>
+        <h2
+          className={`mt-3 text-3xl font-bold tracking-tight sm:text-4xl ${
+            light ? "text-white" : "text-navy"
+          }`}
+        >
+          {title}
+        </h2>
+      </Reveal>
+      <Reveal
+        direction="wipe"
+        delay={350}
+        duration={800}
+        className="mt-5 flex justify-center"
+      >
+        <span className="block h-[3px] w-20 rounded-full bg-crimson" />
+      </Reveal>
+      {subtitle && (
+        <Reveal delay={250} duration={700}>
+          <p
+            className={`mx-auto mt-6 max-w-2xl text-sm leading-relaxed sm:text-base ${
+              light ? "text-white/70" : "text-stone"
+            }`}
+          >
+            {subtitle}
+          </p>
+        </Reveal>
+      )}
+    </div>
+  );
+}
 
 export default function Admissions() {
   return (
@@ -97,197 +130,169 @@ export default function Admissions() {
       />
 
       {/* Admission Roadmap */}
-      <section className="bg-white py-16">
-        <Reveal>
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-2xl font-bold text-navy sm:text-3xl">
-              Admission Roadmap
-            </h2>
-
-            {/* Desktop curvy road */}
-            <div className="relative mt-16 hidden h-64 w-full md:block">
-              <svg
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                className="absolute inset-0 h-full w-full"
-              >
-                <defs>
-                  <linearGradient id="roadGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#1878b5" />
-                    <stop offset="70%" stopColor="#1878b5" />
-                    <stop offset="100%" stopColor="#c0392b" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M 6 25 C 20 25, 20 78, 30 78 S 45 25, 55 25 S 68 78, 78 78 S 90 25, 96 25"
-                  fill="none"
-                  stroke="url(#roadGradient)"
-                  strokeWidth="0.8"
-                  strokeLinecap="round"
-                  strokeDasharray="1.2 2.4"
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
-
-              {roadmapSteps.map((step, idx) => {
-                const Icon = step.icon;
-                const isLast = idx === roadmapSteps.length - 1;
-                const cardAbove = step.y > 50;
-                return (
-                  <div
-                    key={step.label}
-                    className="group absolute z-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                    style={{ left: `${step.x}%`, top: `${step.y}%` }}
-                  >
-                    <div className="flex flex-col items-center">
-                      <div className="relative">
-                        <div
-                          className={`flex h-11 w-11 items-center justify-center rounded-full text-white shadow-md transition-transform duration-200 group-hover:scale-110 ${
-                            isLast
-                              ? "bg-crimson group-hover:animate-pulse"
-                              : "bg-primary"
-                          }`}
-                        >
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <span
-                          className={`absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white text-[10px] font-bold text-white ${
-                            isLast ? "bg-crimson-dark" : "bg-navy"
-                          }`}
-                        >
-                          {idx + 1}
-                        </span>
-                      </div>
-                      <span className="mt-1.5 whitespace-nowrap text-xs font-semibold text-stone">
-                        {step.label}
-                      </span>
-                    </div>
-                    <div
-                      className={`pointer-events-none absolute left-1/2 w-40 -translate-x-1/2 rounded-lg border p-2.5 text-center text-xs text-stone opacity-0 shadow-lg transition-all duration-200 group-hover:opacity-100 ${
-                        isLast ? "border-crimson" : "border-primary"
-                      } bg-white ${
-                        cardAbove
-                          ? "bottom-full mb-2 translate-y-1 group-hover:translate-y-0"
-                          : "top-full mt-2 -translate-y-1 group-hover:translate-y-0"
-                      }`}
-                    >
-                      {step.desc}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Mobile fallback — vertical list */}
-            <div className="mt-10 space-y-4 md:hidden">
-              {roadmapSteps.map((step, idx) => {
-                const Icon = step.icon;
-                return (
-                  <div key={step.label} className="flex items-center gap-3">
-                    <div className="relative flex-shrink-0">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white">
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-navy text-[9px] font-bold text-white">
-                        {idx + 1}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-navy">
-                        {step.label}
-                      </p>
-                      <p className="text-xs text-stone">{step.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </Reveal>
+      <section className="bg-white py-20">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle eyebrow="How to apply" title="Admission Roadmap" />
+          <AdmissionRoad />
+        </div>
       </section>
 
-      {/* Fees */}
-      <section className="bg-gray-50 py-16">
-        <div className="mx-auto max-w-md px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <div className="rounded-2xl border border-primary/15 bg-white p-8 text-center shadow-sm">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Banknote className="h-7 w-7" />
+      {/* Semester Fee */}
+      <section className="relative overflow-hidden bg-navy py-24">
+        {/* Decorative glow + grid */}
+        <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -left-24 h-96 w-96 rounded-full bg-crimson/10 blur-3xl" />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+          }}
+        />
+
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-12 md:grid-cols-2">
+            <Reveal direction="left" duration={800}>
+              <div className="text-center md:text-left">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/50">
+                  What it costs
+                </p>
+                <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+                  Semester Fee
+                </h2>
+                <span className="mt-5 inline-block h-[3px] w-16 rounded-full bg-crimson" />
+                <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/70">
+                  Charged per semester as per the university-set rate, covering
+                  tuition and standard campus services.
+                </p>
+
+                <div className="mt-8 flex flex-wrap justify-center gap-2.5 md:justify-start">
+                  {included.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <Reveal
+                        key={item.label}
+                        direction="up"
+                        duration={600}
+                        delay={300 + idx * 110}
+                      >
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-medium text-white/80 backdrop-blur-sm transition-colors duration-300 hover:border-white/30 hover:bg-white/10">
+                          <Icon className="h-3.5 w-3.5" />
+                          {item.label}
+                        </span>
+                      </Reveal>
+                    );
+                  })}
+                </div>
               </div>
-              <h2 className="mt-4 text-lg font-semibold text-navy">
-                Semester Fee
-              </h2>
-              <p className="mt-2 text-4xl font-bold text-primary">
-                NPR 50,000
-              </p>
-              <p className="mt-1 text-xs text-stone/70">
-                As per the university-set rate, per semester
-              </p>
-            </div>
-          </Reveal>
+            </Reveal>
+
+            <Reveal direction="scale" duration={900} delay={150}>
+              <div className="group relative mx-auto w-full max-w-sm">
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/40 to-crimson/20 blur-xl transition-opacity duration-500 group-hover:opacity-80" />
+                <div className="relative rounded-3xl border border-white/15 bg-white/[0.07] p-10 text-center backdrop-blur-md transition-transform duration-500 group-hover:-translate-y-1.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/50">
+                    Per semester
+                  </p>
+                  <p className="mt-4 text-5xl font-bold tracking-tight text-white sm:text-6xl">
+                    <CountUp value={50000} prefix="NPR " />
+                  </p>
+                  <div className="mx-auto mt-6 h-px w-24 bg-white/20" />
+                  <p className="mt-5 text-xs leading-relaxed text-white/50">
+                    Rate set by Tribhuvan University
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       {/* Scholarships */}
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <div>
-              <h2 className="text-center text-2xl font-bold text-navy sm:text-3xl">
-                Scholarship Opportunities
-              </h2>
-              <p className="mt-3 text-center text-sm text-stone sm:text-base">
-                Aadikavi Bhanubhakta Campus supports academic excellence and
-                eases financial burden through several scholarship avenues.
-              </p>
-            </div>
-          </Reveal>
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <SectionTitle
+            eyebrow="Support available"
+            title="Scholarship Opportunities"
+            subtitle="Aadikavi Bhanubhakta Campus supports academic excellence and eases financial burden through several scholarship avenues."
+          />
 
-          <div className="mt-10">
-            <h3 className="text-center font-semibold text-navy">
-              Merit-Based Campus Scholarships
-            </h3>
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {/* Podium */}
+          <div className="mt-16">
+            <Reveal duration={600}>
+              <h3 className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-stone/60">
+                Merit-Based Campus Scholarships
+              </h3>
+            </Reveal>
+
+            <div className="mt-10 grid grid-cols-1 items-end gap-6 sm:grid-cols-3">
               {ranks.map((item, idx) => (
-                <Reveal key={item.rank} delay={idx * 120}>
+                <Reveal
+                  key={item.rank}
+                  direction={rankDirections[idx]}
+                  duration={750}
+                  delay={idx * 130}
+                  className={item.order}
+                >
                   <div
-                    className={`rounded-xl border ${item.border} bg-gray-50 p-6 text-center transition-shadow hover:shadow-md`}
+                    className={`group relative h-full overflow-hidden rounded-2xl bg-gray-50 p-8 text-center ring-1 ${item.ring} transition-all duration-400 hover:-translate-y-2 hover:bg-white hover:shadow-xl ${item.lift}`}
                   >
+                    <span
+                      className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.accent}`}
+                    />
                     <div
-                      className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full ${item.iconBg} ${item.iconColor}`}
+                      className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full ${item.iconBg} ${item.iconColor} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6`}
                     >
-                      <Award className="h-6 w-6" />
+                      <Award className="h-7 w-7" />
                     </div>
-                    <p className="mt-3 text-sm font-medium text-stone">
+                    <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-stone/70">
                       {item.rank}
                     </p>
-                    <p className="mt-1 text-xl font-bold text-primary">
-                      {item.amount}
+                    <p className="mt-2 text-2xl font-bold text-primary sm:text-3xl">
+                      <CountUp value={item.amount} prefix="NPR " />
                     </p>
                   </div>
                 </Reveal>
               ))}
             </div>
-            <p className="mt-4 text-center text-xs text-stone/70">
-              Ties split the award proportionally from the NPR 30,000 pool.
-            </p>
+
+            <Reveal direction="fade" delay={400} duration={800}>
+              <p className="mt-8 text-center text-xs text-stone/60">
+                Ties split the award proportionally from the NPR 30,000 pool.
+              </p>
+            </Reveal>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {/* Other scholarships */}
+          <div className="mt-20 grid grid-cols-1 gap-6 md:grid-cols-2">
             {otherScholarships.map((item, idx) => {
               const Icon = item.icon;
               return (
-                <Reveal key={item.title} delay={idx * 120}>
-                  <div className="flex gap-4">
-                    <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <Icon className="h-5 w-5" />
+                <Reveal
+                  key={item.title}
+                  direction={idx === 0 ? "left" : "right"}
+                  duration={750}
+                  delay={idx * 140}
+                >
+                  <div className="group relative h-full overflow-hidden rounded-2xl bg-gray-50 p-7 pl-8 transition-all duration-400 hover:bg-white hover:shadow-lg">
+                    <span
+                      className={`absolute inset-y-0 left-0 w-1 origin-top scale-y-0 ${item.bar} transition-transform duration-500 group-hover:scale-y-100`}
+                    />
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-xl ${item.iconBg} ${item.iconColor} transition-transform duration-500 group-hover:scale-110`}
+                    >
+                      <Icon className="h-6 w-6" />
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-navy">
-                        {item.title}
-                      </h4>
-                      <p className="mt-1 text-sm text-stone">{item.desc}</p>
-                    </div>
+                    <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+                      {item.eyebrow}
+                    </p>
+                    <h4 className="mt-2 text-lg font-bold text-navy">
+                      {item.title}
+                    </h4>
+                    <p className="mt-3 text-sm leading-relaxed text-stone">
+                      {item.desc}
+                    </p>
                   </div>
                 </Reveal>
               );
