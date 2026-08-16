@@ -1,14 +1,33 @@
+export type Lab = {
+  number: number;
+  title: string;
+  tools?: string[];
+  page?: number;
+};
+
 export type PracticalSubject = {
   code: string;
   name: string;
   note?: string;
   group?: string;
+  description?: string;
+  teacher?: string;
+  labsheet?: string;
+  labs?: Lab[];
 };
 
 export type PracticalSemester = {
   number: number;
   subjects: PracticalSubject[];
 };
+
+export function subjectSlug(code: string) {
+  return code
+    .toLowerCase()
+    .replace(/\./g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
 
 export const practicals: PracticalSemester[] = [
   {
@@ -45,9 +64,80 @@ export const practicals: PracticalSemester[] = [
   {
     number: 5,
     subjects: [
-      { code: "ICT Ed. 455", name: "Java Programming" },
-      { code: "ICT Ed. 456", name: "Data Communication and Network" },
-      { code: "ICT Ed. 457", name: "Software Engineering and Project Management", note: "Project" },
+      {
+        code: "ICT Ed. 455",
+        name: "Java Programming",
+        description:
+          "Covers the fundamentals of Java — program structure, data types and type casting — before moving into object-oriented concepts and building graphical interfaces with Swing layout managers.",
+        teacher: "Er. Bibek Bahadur Bhujel",
+        labsheet: "ict-ed-455.pdf",
+        labs: [
+          { number: 1, title: "Basic structure of a Java program", page: 4 },
+          { number: 2, title: "Basic data types in Java", page: 5 },
+          { number: 3, title: "Type casting in Java", page: 7 },
+          { number: 4, title: "Loops using FizzBuzz", page: 9 },
+          { number: 5, title: "Inheritance in Java", page: 11 },
+          { number: 6, title: "Polymorphism in Java", page: 13 },
+          { number: 7, title: "Exception handling in Java", page: 15 },
+          { number: 8, title: "JFrame and JPanel", page: 17 },
+          { number: 9, title: "Border layout", page: 19 },
+          { number: 10, title: "Box layout", page: 21 },
+          { number: 11, title: "Grid layout", page: 23 },
+          { number: 12, title: "GridBag layout", page: 25 },
+          { number: 13, title: "Flow layout", page: 27 },
+        ],
+      },
+      {
+        code: "ICT Ed. 456",
+        name: "Data Communication and Network",
+        description:
+          "Hands-on packet analysis using Wireshark — capturing live network traffic and examining how data moves across a network, from subnetting and transport protocols down to Ethernet frames and DHCP.",
+        teacher: "Er. Michael Thapa",
+        labsheet: "ict-ed-456.pdf",
+        labs: [
+          {
+            number: 1,
+            title: "Installation of Wireshark and learning to use it",
+            tools: ["Wireshark", "Npcap"],
+            page: 3,
+          },
+          {
+            number: 2,
+            title: "Capture and save network traffic using Wireshark",
+            tools: ["Wireshark", "Npcap"],
+            page: 5,
+          },
+          {
+            number: 3,
+            title: "Subnetting and network communication analysis",
+            tools: ["Wireshark"],
+            page: 7,
+          },
+          {
+            number: 4,
+            title: "Analysis of TCP and UDP traffic",
+            tools: ["Wireshark"],
+            page: 9,
+          },
+          {
+            number: 5,
+            title: "Analysis of Ethernet and IEEE 802.11 frames",
+            tools: ["Wireshark"],
+            page: 11,
+          },
+          {
+            number: 6,
+            title: "Analysis of DHCP traffic",
+            tools: ["Wireshark"],
+            page: 13,
+          },
+        ],
+      },
+      {
+        code: "ICT Ed. 457",
+        name: "Software Engineering and Project Management",
+        note: "Project",
+      },
     ],
   },
   {
@@ -78,3 +168,7 @@ export const practicals: PracticalSemester[] = [
     ],
   },
 ];
+
+export const allPracticalSubjects = practicals.flatMap((sem) =>
+  sem.subjects.map((subject) => ({ ...subject, semester: sem.number }))
+);
