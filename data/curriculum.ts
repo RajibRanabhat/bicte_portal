@@ -5,7 +5,9 @@ export function codeToSlug(code: string): string {
 export type Subject = {
   code: string;
   name: string;
+  credits?: number;
   syllabus?: string;
+  elective?: string;
 };
 
 export type Semester = {
@@ -92,8 +94,8 @@ export const curriculum: Semester[] = [
       { code: "Ed. 472", name: "Research Project" },
       { code: "ICT Ed. 477", name: "Python Programming" },
       { code: "ICT Ed 478", name: "Teaching Method in ICT" },
-      { code: "ICT Ed 473", name: "Geographical Information System (GIS)" },
-      { code: "ICT Ed 474", name: "Multimedia" },
+      { code: "ICT Ed 473", name: "Geographical Information System (GIS)", elective: "Elective I" },
+      { code: "ICT Ed 474", name: "Multimedia", elective: "Elective I" },
       { code: "ICT Ed. 479", name: "Capstone Project" },
     ],
   },
@@ -104,9 +106,65 @@ export const curriculum: Semester[] = [
       { code: "ICT. Ed 482", name: "Artificial Intelligence in Education" },
       { code: "ICT. Ed. 486", name: "System Administration using Linux" },
       { code: "Ed 481", name: "Classroom Pedagogy" },
-      { code: "ICT. Ed 484", name: "Big Data and Data Analysis" },
-      { code: "ICT. Ed 483", name: "Cloud Computing" },
+      { code: "ICT. Ed 484", name: "Big Data and Data Analysis", elective: "Elective II" },
+      { code: "ICT. Ed 483", name: "Cloud Computing", elective: "Elective II" },
       { code: "ICT Ed 487", name: "Teaching Practicum in ICT in Education" },
     ],
   },
 ];
+
+export type CurriculumRow =
+  | { kind: "subject"; subject: Subject }
+  | { kind: "elective"; label: string; credits: number; options: Subject[] };
+
+export function getSemesterRows(semester: Semester): CurriculumRow[] {
+  const rows: CurriculumRow[] = [];
+  const seen = new Set<string>();
+
+  for (const subject of semester.subjects) {
+    if (subject.elective) {
+      if (seen.has(subject.elective)) continue;
+      seen.add(subject.elective);
+      const options = semester.subjects.filter((s) => s.elective === subject.elective);
+      rows.push({
+        kind: "elective",
+        label: subject.elective,
+        credits: options[0]?.credits ?? 3,
+        options,
+      });
+    } else {
+      rows.push({ kind: "subject", subject });
+    }
+  }
+
+  return rows;
+}
+
+export function getSemesterCredits(semester: Semester): number {
+  return getSemesterRows(semester).reduce(
+    (sum, row) => sum + (row.kind === "subject" ? row.subject.credits ?? 3 : row.credits),
+    0
+  );
+}
+
+export function getSemesterCourseCount(semester: Semester): number {
+  return getSemesterRows(semester).length;
+}
+
+export function getTotalCredits(): number {
+  return curriculum.reduce((sum, s) => sum + getSemesterCredits(s), 0);
+}
+
+export function getTotalCourses(): number {
+  return curriculum.reduce((sum, s) => sum + getSemesterCourseCount(s), 0);
+}
+
+export function getTotalElectives(): number {
+  const labels = new Set<string>();
+  curriculum.forEach((s) =>
+    s.subjects.forEach((sub) => {
+      if (sub.elective) labels.add(sub.elective);
+    })
+  );
+  return labels.size;
+}
