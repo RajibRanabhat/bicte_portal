@@ -31,10 +31,10 @@ export const navigation: NavItem[] = [
     href: "/practicals",
     children: [{ label: "Coming Soon", href: "/practicals" }],
   },
-  /*{
+  {
     label: "ABIT Club",
     href: "/abit-club",
-  },*/
+  },
   {
     label: "Faculty",
     href: "/faculty",
