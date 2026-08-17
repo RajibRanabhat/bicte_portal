@@ -1,4 +1,4 @@
-import { Award, HeartHandshake, Globe2, Wallet, BookOpen, Building2 } from "lucide-react";
+import { Award, HeartHandshake, Globe2, Wallet, FlaskConical, Building2 } from "lucide-react";
 import Reveal from "@/components/Reveal";
 import PageHeader from "@/components/PageHeader";
 import CountUp from "@/components/CountUp";
@@ -40,7 +40,7 @@ const ranks = [
 const rankDirections = ["up", "left", "right"] as const;
 
 const included = [
-  { icon: BookOpen, label: "Tuition" },
+  { icon: FlaskConical, label: "Practicals" },
   { icon: Building2, label: "Campus services" },
   { icon: Wallet, label: "Exam fees" },
 ];
@@ -163,8 +163,8 @@ export default function Admissions() {
                 </h2>
                 <span className="mt-5 inline-block h-[3px] w-16 rounded-full bg-crimson" />
                 <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/70">
-                  Charged per semester as per the university-set rate, covering
-                  tuition and standard campus services.
+                  Charged per semester at the rate set by Aadikavi Bhanubhakta
+                  Campus, covering practicals, campus services and exam fees.
                 </p>
 
                 <div className="mt-8 flex flex-wrap justify-center gap-2.5 md:justify-start">
@@ -196,7 +196,7 @@ export default function Admissions() {
                     Per semester
                   </p>
                   <p className="mt-4 text-5xl font-bold tracking-tight text-white sm:text-6xl">
-                    <CountUp value={50000} prefix="NPR " />
+                    NPR 50,000
                   </p>
                   <div className="mx-auto mt-6 h-px w-24 bg-white/20" />
                   <p className="mt-5 text-xs leading-relaxed text-white/50">
