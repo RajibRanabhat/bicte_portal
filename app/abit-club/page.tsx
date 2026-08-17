@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import "@fontsource/quicksand/500.css";
+import "@fontsource/quicksand/600.css";
+import "@fontsource/quicksand/700.css";
 import {
   ArrowRight,
   BookOpen,
@@ -9,7 +12,6 @@ import {
   Flag,
   Laptop,
   Lightbulb,
-  Mail,
   Mic,
   PartyPopper,
   Rocket,
@@ -19,17 +21,21 @@ import {
   Wrench,
   type LucideIcon,
 } from "lucide-react";
-import { FaGithub, FaLinkedinIn } from "react-icons/fa";
 import Reveal from "@/components/Reveal";
 import {
-  advisors,
-  members,
-  officers,
-  president,
-  type LeadershipMember,
-} from "@/data/leadership";
+  AnimatedGrid,
+  LeadershipIntro,
+  LeadershipSubLabel,
+  PresidentSpotlightCard,
+  OfficerCard,
+  CompactMemberCard,
+} from "@/components/LeadershipCards";
+import { advisors, members, officers, president } from "@/data/leadership";
 
-
+// Self-hosted via @fontsource so the build never depends on reaching
+// Google's font CDN. Scoped to the Leadership section only, per request \u2014
+// the rest of the page keeps the site's default font.
+const quicksandStyle = { fontFamily: "'Quicksand', sans-serif" };
 
 const pillars = [
   {
@@ -82,6 +88,13 @@ const activities = [
   },
 ];
 
+const milestones = [
+  { year: "2021", label: "ABIT Club Was Founded", icon: Flag },
+  { year: "2022", label: "First Workshop Series Conducted", icon: Rocket },
+  { year: "2023", label: "Organized First Tech Fest", icon: PartyPopper },
+  { year: "2024", label: "IoT Bootcamp Launched", icon: Mic },
+  { year: "2025", label: "More Projects & More Impact", icon: Camera },
+];
 
 const galleryPreview = [
   {
@@ -106,15 +119,6 @@ const galleryPreview = [
   },
 ];
 
-function initials(name: string) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
-}
-
 function SectionLabel({
   children,
   center = false,
@@ -137,7 +141,6 @@ function SectionLabel({
     </div>
   );
 }
-
 
 function PillarItem({
   icon: Icon,
@@ -181,182 +184,6 @@ function ActivityCard({
   );
 }
 
-function SocialRow({
-  member,
-  dark = false,
-}: {
-  member: LeadershipMember;
-  dark?: boolean;
-}) {
-  const items: { href?: string; icon: React.ElementType; label: string }[] = [
-    {
-      href: member.linkedin,
-      icon: FaLinkedinIn,
-      label: `${member.name} on LinkedIn`,
-    },
-    {
-      href: member.github,
-      icon: FaGithub,
-      label: `${member.name} on GitHub`,
-    },
-    {
-      href: member.email ? `mailto:${member.email}` : undefined,
-      icon: Mail,
-      label: `Email ${member.name}`,
-    },
-  ];
-
-  return (
-    <div className="flex items-center gap-2">
-      {items.map(({ href, icon: Icon, label }, idx) => {
-        const base =
-          "flex h-7 w-7 items-center justify-center rounded-full text-xs transition";
-
-        if (href) {
-          return (
-            <a
-              key={idx}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              className={`${base} ${
-                dark
-                  ? "bg-white/10 text-white hover:bg-white hover:text-navy"
-                  : "bg-primary/10 text-primary hover:bg-primary hover:text-white"
-              }`}
-            >
-              <Icon className="h-3.5 w-3.5" />
-            </a>
-          );
-        }
-
-        return (
-          <span
-            key={idx}
-            aria-hidden="true"
-            className={`${base} cursor-default ${
-              dark ? "bg-white/5 text-white/30" : "bg-stone/5 text-stone/30"
-            }`}
-          >
-            <Icon className="h-3.5 w-3.5" />
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-function PresidentCard({ member }: { member: LeadershipMember }) {
-  return (
-    <div className="flex h-full gap-5 rounded-3xl bg-navy p-5 text-white shadow-lg sm:gap-6 sm:p-6">
-      <div className="relative aspect-[3/4] w-2/5 shrink-0 overflow-hidden rounded-2xl bg-white/5">
-        {member.photo ? (
-          <Image
-            src={member.photo}
-            alt={member.name}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/30 to-white/5 text-3xl font-black text-white/70">
-            {initials(member.name)}
-          </div>
-        )}
-      </div>
-
-      <div className="flex flex-1 flex-col">
-        <span className="inline-flex w-fit rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-          {member.role}
-        </span>
-        <p className="mt-3 text-xl font-bold sm:text-2xl">{member.name}</p>
-        <p className="mt-1 text-sm text-white/70">
-          {member.role}, ABIT Club
-        </p>
-        {member.meta && (
-          <p className="text-sm text-white/70">{member.meta}</p>
-        )}
-
-        {member.quote && (
-          <p className="mt-4 text-sm italic leading-6 text-white/60">
-            &ldquo;{member.quote}&rdquo;
-          </p>
-        )}
-
-        <div className="mt-auto pt-4">
-          <SocialRow member={member} dark />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function OfficerCard({ member }: { member: LeadershipMember }) {
-  return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-stone/10 bg-white shadow-sm">
-      <div className="relative aspect-square w-full bg-slate-100">
-        {member.photo ? (
-          <Image
-            src={member.photo}
-            alt={member.name}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-stone/25">
-            {initials(member.name)}
-          </div>
-        )}
-      </div>
-      <div className="p-4">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-primary">
-          {member.role}
-        </p>
-        <p className="mt-1 font-bold text-navy">{member.name}</p>
-        {member.meta && (
-          <p className="text-xs text-stone/55">{member.meta}</p>
-        )}
-        <div className="mt-3">
-          <SocialRow member={member} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CompactMemberCard({ member }: { member: LeadershipMember }) {
-  return (
-    <div className="flex items-center gap-4 rounded-2xl border border-stone/10 bg-white p-3 shadow-sm">
-      <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">
-        {member.photo ? (
-          <Image
-            src={member.photo}
-            alt={member.name}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-stone/25">
-            {initials(member.name)}
-          </div>
-        )}
-      </div>
-      <div className="min-w-0">
-        <p className="truncate text-[11px] font-bold uppercase tracking-wider text-primary">
-          {member.role}
-        </p>
-        <p className="truncate font-bold text-navy">{member.name}</p>
-        {member.meta && (
-          <p className="truncate text-xs text-stone/55">{member.meta}</p>
-        )}
-        <div className="mt-2">
-          <SocialRow member={member} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function AbitClubPage() {
   return (
     <main className="overflow-hidden bg-white text-stone">
@@ -364,7 +191,7 @@ export default function AbitClubPage() {
       <section className="relative isolate overflow-hidden bg-navy">
         <div className="absolute inset-0">
           <Image
-            src="/leadership/abit-club."
+            src="/gallery/dm5.jpg"
             alt="ABIT Club members collaborating during a bootcamp session"
             fill
             priority
@@ -409,8 +236,6 @@ export default function AbitClubPage() {
           </div>
         </div>
       </section>
-
-      
 
       {/* WHO WE ARE */}
       <section id="about" className="scroll-mt-24 bg-white py-20 lg:py-28">
@@ -487,55 +312,92 @@ export default function AbitClubPage() {
       </section>
 
       {/* LEADERSHIP */}
-      <section id="leadership" className="scroll-mt-24 bg-white py-20 lg:py-28">
+      <section
+        id="leadership"
+        className="scroll-mt-24 bg-white py-20 lg:py-28"
+        style={quicksandStyle}
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Reveal>
-            <div className="text-center">
-              <SectionLabel center>Our Leadership</SectionLabel>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-navy sm:text-4xl">
-                Meet the minds leading ABIT Club.
-              </h2>
-              <p className="mt-2 text-sm text-stone/50">
-                Executive Committee 2082&ndash;84 B.S.
-              </p>
-            </div>
-          </Reveal>
+          <LeadershipIntro
+            eyebrow="Our Leadership"
+            heading="Meet the minds leading ABIT Club."
+            subheading={"Executive Committee 2082\u201384 B.S."}
+          />
 
-          <Reveal delay={100}>
-            <div className="mt-12 flex flex-col gap-5 lg:flex-row">
-              <div className="lg:w-[38%]">
-                <PresidentCard member={president} />
-              </div>
-              <div className="grid flex-1 grid-cols-2 gap-5 sm:grid-cols-3">
-                {officers.map((officer) => (
-                  <OfficerCard key={officer.name} member={officer} />
-                ))}
-              </div>
+          <div className="mt-14 flex flex-col gap-6 lg:flex-row lg:items-stretch">
+            <div className="lg:w-[34%]">
+              <PresidentSpotlightCard member={president} />
             </div>
-          </Reveal>
+            <AnimatedGrid className="grid flex-1 grid-cols-2 gap-5 sm:grid-cols-3">
+              {officers.map((officer) => (
+                <OfficerCard key={officer.name} member={officer} />
+              ))}
+            </AnimatedGrid>
+          </div>
 
-          <Reveal delay={150}>
-            <div className="mt-14">
-              <SectionLabel>Members</SectionLabel>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                {members.map((member) => (
-                  <CompactMemberCard key={member.name} member={member} />
-                ))}
-              </div>
-            </div>
-          </Reveal>
+          <div className="mt-16">
+            <LeadershipSubLabel>Members</LeadershipSubLabel>
+            <AnimatedGrid className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {members.map((member) => (
+                <CompactMemberCard key={member.name} member={member} />
+              ))}
+            </AnimatedGrid>
+          </div>
 
-          <Reveal delay={200}>
-            <div className="mt-14">
-              <SectionLabel>Club Advisors</SectionLabel>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:max-w-xl">
-                {advisors.map((advisor) => (
-                  <CompactMemberCard key={advisor.name} member={advisor} />
-                ))}
-              </div>
-            </div>
-          </Reveal>
+          <div className="mt-14">
+            <LeadershipSubLabel>Club Advisors</LeadershipSubLabel>
+            <AnimatedGrid className="mt-6 grid gap-4 sm:grid-cols-2 lg:max-w-xl">
+              {advisors.map((advisor) => (
+                <CompactMemberCard key={advisor.name} member={advisor} />
+              ))}
+            </AnimatedGrid>
+          </div>
         </div>
+      </section>
+
+      {/* JOURNEY */}
+      <section
+        id="journey"
+        className="scroll-mt-24 bg-navy py-20 text-white lg:py-28"
+      >
+        <Reveal>
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <SectionLabel center light>
+                Our Journey
+              </SectionLabel>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+                Milestones that shape us.
+              </h2>
+            </div>
+
+            <div className="relative mt-16">
+              <div className="absolute left-0 right-0 top-6 hidden h-px bg-white/15 lg:block" />
+
+              <div className="flex gap-8 overflow-x-auto pb-4 lg:grid lg:grid-cols-5 lg:gap-4 lg:overflow-visible lg:pb-0">
+                {milestones.map((milestone) => {
+                  const Icon = milestone.icon;
+                  return (
+                    <div
+                      key={milestone.year}
+                      className="relative flex w-36 shrink-0 flex-col items-center text-center lg:w-auto"
+                    >
+                      <span className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary/40 bg-navy text-primary">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <p className="mt-4 text-lg font-bold">
+                        {milestone.year}
+                      </p>
+                      <p className="mt-1 text-sm leading-5 text-white/60">
+                        {milestone.label}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* GALLERY */}
@@ -581,8 +443,6 @@ export default function AbitClubPage() {
           </div>
         </Reveal>
       </section>
-
-    
     </main>
   );
 }
