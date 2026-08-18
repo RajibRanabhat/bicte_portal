@@ -38,12 +38,12 @@ export default function Navbar() {
   };
 
   const navLinks = (
-    <nav className="hidden md:flex md:items-center md:gap-7">
+    <nav className="hidden md:flex md:items-center">
       {navigation.map((item) => (
         <div key={item.label} className="group relative">
           <Link
             href={item.href}
-            className="flex items-center gap-1 py-2 text-base font-semibold text-white/90 transition-colors hover:text-white"
+            className="flex items-center gap-1 px-4 py-4 text-base font-semibold text-white/90 transition-colors duration-200 group-hover:bg-crimson-dark group-hover:text-white"
           >
             {item.label}
             {item.children && (
@@ -59,12 +59,12 @@ export default function Navbar() {
           </Link>
 
           {item.children && (
-            <div className="invisible absolute left-1/2 top-full w-56 -translate-x-1/2 rounded-md border border-stone/10 bg-white py-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
+            <div className="invisible absolute left-0 top-full w-max min-w-full border border-stone/10 bg-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
               {item.children.map((child) => (
                 <Link
                   key={child.label}
                   href={child.href}
-                  className="block px-4 py-2 text-sm text-stone hover:bg-primary/5 hover:text-primary"
+                  className="block border-b border-stone/10 px-5 py-3 text-sm text-stone transition-colors last:border-0 hover:bg-crimson-dark hover:text-white"
                 >
                   {child.label}
                 </Link>
