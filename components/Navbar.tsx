@@ -43,7 +43,7 @@ export default function Navbar() {
         <div key={item.label} className="group relative">
           <Link
             href={item.href}
-            className="flex items-center gap-1 px-4 py-4 text-base font-semibold text-white/90 transition-colors duration-200 group-hover:bg-crimson-dark group-hover:text-white"
+            className="flex h-14 items-center gap-1 px-4 text-base font-semibold text-white/90 transition-colors duration-200 group-hover:bg-crimson-dark group-hover:text-white"
           >
             {item.label}
             {item.children && (
@@ -59,7 +59,7 @@ export default function Navbar() {
           </Link>
 
           {item.children && (
-            <div className="invisible absolute left-0 top-full w-max min-w-full border border-stone/10 bg-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
+            <div className="invisible absolute left-0 top-full w-56 bg-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
               {item.children.map((child) => (
                 <Link
                   key={child.label}
