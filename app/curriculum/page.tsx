@@ -3,10 +3,9 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence, type Variants } from "motion/react";
 import Link from "next/link";
-import { FlaskConical, FileText, ArrowUpRight, Search, X } from "lucide-react";
+import { FlaskConical, BookOpen, ArrowUpRight, Search, X } from "lucide-react";
 import {
   curriculum,
-  codeToSlug,
   getSemesterRows,
   getSemesterCredits,
   getSemesterCourseCount,
@@ -16,7 +15,7 @@ import {
   subjectCategory,
   categoryStyles,
   flatSubjects,
-  type Subject,
+  subjectsWithResources,
   type SubjectCategory,
 } from "@/data/curriculum";
 import { practicals, subjectSlug } from "@/data/practicals";
@@ -24,17 +23,16 @@ import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import CountUp from "@/components/CountUp";
 
-function pdfHref(subject: Subject): string {
-  const slug = subject.syllabus ?? codeToSlug(subject.code);
-  return "/syllabus/" + slug + ".pdf";
-}
-
 const labSubjectSlugs = new Set(
   practicals.flatMap((sem) =>
     sem.subjects
       .filter((s) => (s.labs?.length ?? 0) > 0)
       .map((s) => subjectSlug(s.code))
   )
+);
+
+const resourceSlugs = new Set(
+  subjectsWithResources.map((s) => subjectSlug(s.code))
 );
 
 type FilterKey = SubjectCategory | "All" | "Labs";
@@ -253,6 +251,7 @@ export default function Curriculum() {
                   {results.map((s) => {
                     const style = categoryStyles[s.category];
                     const hasLab = labSubjectSlugs.has(subjectSlug(s.code));
+                    const hasExtras = resourceSlugs.has(subjectSlug(s.code));
 
                     return (
                       <motion.div
@@ -271,9 +270,8 @@ export default function Curriculum() {
                           {style.label}
                         </span>
 
-                        <a href={pdfHref(s)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Link
+                          href={`/curriculum/${subjectSlug(s.code)}`}
                           className="group flex-1 text-sm leading-snug"
                         >
                           <span className="font-semibold" style={{ color: style.hex }}>
@@ -282,7 +280,16 @@ export default function Curriculum() {
                           <span className="font-medium text-navy transition-colors group-hover:text-primary">
                             {s.name}
                           </span>
-                        </a>
+                        </Link>
+
+                        {hasExtras && (
+                          <span
+                            title="Extra materials available"
+                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gold/15 text-gold-dark"
+                          >
+                            <BookOpen className="h-3.5 w-3.5" />
+                          </span>
+                        )}
 
                         {hasLab && (
                           <Link
@@ -326,6 +333,12 @@ export default function Curriculum() {
                 className="mt-5 flex justify-center"
               >
                 <span className="block h-[3px] w-20 rounded-full bg-crimson" />
+              </Reveal>
+              <Reveal delay={250} duration={700}>
+                <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-stone sm:text-base">
+                  Click any subject to open its syllabus, old question papers,
+                  books and notes.
+                </p>
               </Reveal>
             </div>
 
@@ -451,6 +464,9 @@ export default function Curriculum() {
                           const hasLab = labSubjectSlugs.has(
                             subjectSlug(subject.code)
                           );
+                          const hasExtras = resourceSlugs.has(
+                            subjectSlug(subject.code)
+                          );
 
                           return (
                             <li
@@ -458,9 +474,8 @@ export default function Curriculum() {
                               className="border-b border-stone/10 py-3 last:border-0"
                             >
                               <div className="flex items-center justify-between gap-3">
-                                <a href={pdfHref(subject)}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <Link
+                                  href={`/curriculum/${subjectSlug(subject.code)}`}
                                   className="group flex flex-1 items-center gap-3 rounded-lg px-1.5 py-1 transition-colors hover:bg-gray-50"
                                 >
                                   <span
@@ -483,10 +498,18 @@ export default function Curriculum() {
                                       {subject.name}
                                     </span>
                                   </span>
-                                  <FileText className="h-3.5 w-3.5 shrink-0 text-transparent transition-colors group-hover:text-primary/50" />
-                                </a>
+                                  <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-transparent transition-colors group-hover:text-primary/50" />
+                                </Link>
 
                                 <div className="flex shrink-0 items-center gap-2">
+                                  {hasExtras && (
+                                    <span
+                                      title="Extra materials available"
+                                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-gold/15 text-gold-dark"
+                                    >
+                                      <BookOpen className="h-3.5 w-3.5" />
+                                    </span>
+                                  )}
                                   {hasLab && (
                                     <Link
                                       href={`/practicals/${subjectSlug(subject.code)}`}
@@ -540,10 +563,9 @@ export default function Curriculum() {
 
                             <div className="ml-10 mt-2 space-y-0.5 rounded-xl border border-dashed border-stone/20 bg-gray-50 p-2">
                               {row.options.map((opt) => (
-                                <a key={opt.code}
-                                  href={pdfHref(opt)}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <Link
+                                  key={opt.code}
+                                  href={`/curriculum/${subjectSlug(opt.code)}`}
                                   className="group flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-white"
                                 >
                                   <span
@@ -556,7 +578,7 @@ export default function Curriculum() {
                                     {opt.name}
                                   </span>
                                   <ArrowUpRight className="h-3 w-3 shrink-0 text-transparent transition-colors group-hover:text-primary/50" />
-                                </a>
+                                </Link>
                               ))}
                             </div>
                           </li>

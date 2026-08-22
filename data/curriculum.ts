@@ -1,6 +1,58 @@
+export { subjectSlug } from "@/data/practicals";
+import { subjectSlug } from "@/data/practicals";
+
 export function codeToSlug(code: string): string {
   return code.replace(/\./g, "").replace(/\s+/g, "_").trim();
 }
+
+export type QuestionPart = {
+  label: string;
+  description: string;
+  /** Image path under /public. Opens in the lightbox. */
+  file: string;
+};
+
+export type QuestionPaper = {
+  year: string;
+  /** e.g. "Regular", "Terminal". Omit for the main annual paper. */
+  session?: string;
+  fullMarks?: number;
+  duration?: string;
+  /** Printed instruction, e.g. "Attempt all questions". Omit if unverified. */
+  instruction?: string;
+  parts: QuestionPart[];
+};
+
+export type BookRole = "Prescribed" | "Reference";
+
+export type Book = {
+  title: string;
+  authors: string;
+  edition?: string;
+  publisher?: string;
+  year?: string;
+  role: BookRole;
+  /** Local copy under /public, when the campus is permitted to host it. */
+  file?: string;
+  /** External listing — publisher, library or archive page. */
+  link?: string;
+};
+
+export type NoteResource = {
+  title: string;
+  description?: string;
+  pages?: number;
+  file: string;
+  /** Where the material came from, credited on the card. */
+  source?: string;
+};
+
+export type SlideDeck = {
+  unit: string;
+  title: string;
+  file?: string;
+  link?: string;
+};
 
 export type Subject = {
   code: string;
@@ -8,6 +60,12 @@ export type Subject = {
   credits?: number;
   syllabus?: string;
   elective?: string;
+  /** Newest first. */
+  questions?: QuestionPaper[];
+  books?: Book[];
+  notes?: NoteResource[];
+  slides?: SlideDeck[];
+  videoPlaylist?: string;
 };
 
 export type Semester = {
@@ -82,7 +140,51 @@ export const curriculum: Semester[] = [
     subjects: [
       { code: "Ed. 462", name: "Research Methods in Education" },
       { code: "ICT Ed. 465", name: "Visual Programming with C#" },
-      { code: "ICT Ed. 466", name: "Computer Graphics" },
+      {
+        code: "ICT Ed. 466",
+        name: "Computer Graphics",
+        questions: [
+          {
+            year: "2079",
+            fullMarks: 40,
+            duration: "3 hrs",
+            parts: [
+              {
+                label: "Group A",
+                description: "10 objective questions, 1 mark each",
+                file: "/questions/ict-ed-466/2079-group-a.jpg",
+              },
+              {
+                label: "Group B",
+                description: "6 subjective questions, 5 marks each",
+                file: "/questions/ict-ed-466/2079-group-b.jpg",
+              },
+            ],
+          },
+        ],
+        books: [
+          {
+            title: "Computer Graphics: Principles and Practice",
+            authors:
+              "John F. Hughes, Andries van Dam, Morgan McGuire, David F. Sklar, James D. Foley, Steven K. Feiner, Kurt Akeley",
+            edition: "3rd edition",
+            publisher: "Addison-Wesley",
+            year: "2013",
+            role: "Reference",
+            file: "/books/cg-principles-and-practice.pdf",
+          },
+        ],
+        notes: [
+          {
+            title: "Computer Graphics — condensed notes",
+            description:
+              "Covers hardware, output primitives, 2D and 3D transformations, clipping, viewing, visible surface detection and shading.",
+            pages: 91,
+            file: "/notes/ict-ed-466-condensed-notes.pdf",
+            source: "Compiled from Hearn and Baker",
+          },
+        ],
+      },
       { code: "ICT Ed. 467", name: "Digital Pedagogy and LMS" },
       { code: "ICT Ed. 468", name: "Network and Information Security" },
     ],
@@ -195,3 +297,43 @@ export const flatSubjects = curriculum.flatMap((sem) =>
     category: subjectCategory(subject.code),
   }))
 );
+
+/* ---------- resources ---------- */
+
+export type ResourceCounts = {
+  questions: number;
+  books: number;
+  notes: number;
+  slides: number;
+  video: boolean;
+  total: number;
+};
+
+export function getResourceCounts(subject: Subject): ResourceCounts {
+  const questions = subject.questions?.length ?? 0;
+  const books = subject.books?.length ?? 0;
+  const notes = subject.notes?.length ?? 0;
+  const slides = subject.slides?.length ?? 0;
+  const video = Boolean(subject.videoPlaylist);
+
+  return {
+    questions,
+    books,
+    notes,
+    slides,
+    video,
+    total: questions + books + notes + slides + (video ? 1 : 0),
+  };
+}
+
+/** True when a subject has anything beyond its syllabus PDF. */
+export function hasResources(subject: Subject): boolean {
+  return getResourceCounts(subject).total > 0;
+}
+
+/** Every subject that earns a /curriculum/[subject] page. */
+export const subjectsWithResources = flatSubjects.filter(hasResources);
+
+export function findSubjectBySlug(slug: string) {
+  return flatSubjects.find((subject) => subjectSlug(subject.code) === slug) ?? null;
+}
